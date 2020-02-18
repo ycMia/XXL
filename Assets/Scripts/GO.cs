@@ -17,8 +17,7 @@ public class GO : MonoBehaviour
     
     void Start()
     {
-        
-        Debug.Log("Created  :" + gameObject.name + "   " + gameObject.transform.position.x + " " + gameObject.transform.position.y);
+        //Debug.Log("Created  :" + gameObject.name + "   " + gameObject.transform.position.x + " " + gameObject.transform.position.y);
     }
     public void MDestory()
     {
