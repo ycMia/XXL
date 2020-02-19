@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class GM : MonoBehaviour
 {
-    public int[,] gContainer = new int[10, 10];
-    public GameObject[,] gOLines = new GameObject[10,10];
+    public int[,] gContainer = new int[10, 11];
+    public GameObject[,] gOLines = new GameObject[10,11];
     public GameObject[] gPrefabs;//[4]是选择
     public GameObject gLinePrefab;
     public GameObject[] gOSelCristal = new GameObject[2];//gameObject-Selected-Cristal
-    private int   count_gOSelCristal = 0;
+    public int   count_gOSelCristal = 0;
 
     public bool animing = false;//动画播放中==true
     public int playing = 1;//用户可操作==1
     public bool gIsDead = false;
+
+    public bool tBtn = false;
 
     void MouseSelect()
     {
@@ -25,7 +27,7 @@ public class GM : MonoBehaviour
             {
                 foreach (Collider2D c in col)//其实这边只会碰到一个23333   c是Collider2D的缩写
                 {
-                    Debug.Log(count_gOSelCristal);
+                    //Debug.Log(count_gOSelCristal);
                     if(count_gOSelCristal==0)
                     {
                         c.gameObject.GetComponent<GO>().onClick = true;
@@ -119,7 +121,7 @@ public class GM : MonoBehaviour
     public void GenLines()
     {
         for(int i = 0;i< 10; i++)
-            for(int j=0;j< 10; j++)
+            for(int j=0;j< 11; j++)
             {
                 gOLines[i, j] = Instantiate(gLinePrefab, transform.position, transform.rotation);
                 gOLines[i, j].transform.parent = transform;
@@ -135,7 +137,7 @@ public class GM : MonoBehaviour
 
     public int Boom(int x,int y)
     {
-        print("in "+x+" "+y);
+        //print("in "+x+" "+y);
         GameObject gOL = gOLines[x, y];
         Collider2D[] col = Physics2D.OverlapPointAll(gOL.transform.position);
         if (col.Length > 0)
@@ -147,6 +149,22 @@ public class GM : MonoBehaviour
         {
             return 0;
             //[x,y]上不存在宝石
+        }
+    }
+
+    public GameObject Lazer_getObject(int x, int y)
+    {
+        //print("in "+x+" "+y);
+        GameObject gOL = gOLines[x, y];
+        Collider2D[] col = Physics2D.OverlapPointAll(gOL.transform.position);
+        if (col.Length > 0)
+        {
+            return col[0].gameObject;
+        }
+        else
+        {
+            return null;
+            //[x,y]上不存在宝石,返回null
         }
     }
 
@@ -232,7 +250,27 @@ public class GM : MonoBehaviour
 
     void Update()
     {
-        playing = count_gOSelCristal == 2 ? 0 : 1;
+        if(tBtn ==true)
+        {
+            GenMObj(3, 0, 10);
+            GenMObj(2, 1, 10);
+            GenMObj(2, 2, 10);
+            GenMObj(0, 3, 10);
+            tBtn = false;
+        }//用于模拟RandomRow
+
+        playing = 1;//初始设定玩家可以操作...
+        LazerAll();
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
+                if (Lazer(gOLines[i, j]) == -1)
+                {
+                    print("in" + i + " " + j);
+                    playing = 0;//如果在范围内有空块(需要下落操作)则玩家必须等待下落完毕
+                    i = 4;
+                    break;
+                }
+        if (playing == 1 && count_gOSelCristal == 2) count_gOSelCristal = 0;//防止完全下落完毕后玩家的选择宝石数仍然保持在2个(选择中bug)
 
         animing = false;
         for (int i = 0; i < 10; i++)
@@ -241,22 +279,48 @@ public class GM : MonoBehaviour
 
         if (gIsDead)
         {
-
+            //playIsDead
         }
-        else
+        else if (animing == false)
         {
-            if (playing==1 && animing == false)
+            //print("in 下落");
+
+            LazerAll();
+            //为gContainer[,]数组赋值,即获取全部已经block住的宝石的阵列
+            for (int i = 0; i < 4; i++)
             {
-                MouseSelect();
+                for (int j = 0; j < 11; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
+                {
+                    //    if(i==1&&j==1)
+                    //        print(i + " " + j + " " + gContainer[i, j]);
+                    if (gContainer[i, j] == -1)//这个块被扫描出是空的
+                    {
+                        for (int z = j; z < 11; z++)//第11层, 下落层
+                        {
+                            if (Lazer_getObject(i, z) != null)
+                            {
+                                Lazer_getObject(i, z).GetComponent<GO>().MMove = 4;
+                            }
+                            else
+                            {
+                                print("有块被清除");//刷新过快...这可能是个bug
+                            }
+                        }
+                    }
+                }
             }
-            else if(playing == 0 && animing==false)
+            //以上为下落
+
+            if (true)
             {
+                //print("in 消除");
+                LazerAll();
+                //为gContainer[,]数组赋值,即获取全部已经block住的宝石的阵列
+
                 int[,] prob_x = new int[10, 10];
                 int[,] prob_y = new int[10, 10];
                 //bool[,] enable = new bool[10, 10];
 
-                LazerAll();
-                //为gContainer[,]数组赋值
                 for (int i = 0; i < 10; i++)
                 {
                     for (int j = 0; j < 10; j++)
@@ -308,30 +372,29 @@ public class GM : MonoBehaviour
                 {
                     for (int j = 0; j < 10; j++)
                     {
-                        if(prob_x[i,j]==2 )//&& i!=0&&i!=9 , 因为四角!出现2
+                        if (prob_x[i, j] == 2)//&& i!=0&&i!=9 , 因为四角不会出现2
                         {
                             //enable[i, j] = true;
                             //enable[i+1, j] = true;
                             //enable[i-1, j] = true;
                             boomCount += Boom(i, j);
-                            boomCount += Boom(i+1, j);
-                            boomCount += Boom(i-1, j);
+                            boomCount += Boom(i + 1, j);
+                            boomCount += Boom(i - 1, j);
                         }
-                        if(prob_y[i,j]==2 )
+                        if (prob_y[i, j] == 2)
                         {
                             //enable[i, j] = true;
                             //enable[i, j+1] = true;
                             //enable[i, j-1] = true;
                             boomCount += Boom(i, j);
-                            boomCount += Boom(i, j+1);
-                            boomCount += Boom(i, j-1);
+                            boomCount += Boom(i, j + 1);
+                            boomCount += Boom(i, j - 1);
                         }
                     }
                 }
 
-                if(boomCount ==0)//无消除,执行无效操作后的返回动画
+                if (boomCount == 0 && gOSelCristal[0]!=null && gOSelCristal[1]!=null && count_gOSelCristal ==2)//无消除,执行无效操作后的返回动画(这里只能判断物体是否存在了,我别无他法)
                 {
-                    
                     if (gOSelCristal[0].transform.position.x == gOSelCristal[1].transform.position.x)
                     {
                         if (gOSelCristal[0].transform.position.y > gOSelCristal[1].transform.position.y)
@@ -345,9 +408,9 @@ public class GM : MonoBehaviour
                             gOSelCristal[1].GetComponent<GO>().MMove = 4;
                         }
                     }
-                    else if(gOSelCristal[0].transform.position.y == gOSelCristal[1].transform.position.y)
+                    else if (gOSelCristal[0].transform.position.y == gOSelCristal[1].transform.position.y)
                     {
-                        if(gOSelCristal[0].transform.position.x > gOSelCristal[1].transform.position.x)
+                        if (gOSelCristal[0].transform.position.x > gOSelCristal[1].transform.position.x)
                         {
                             gOSelCristal[0].GetComponent<GO>().MMove = 2;
                             gOSelCristal[1].GetComponent<GO>().MMove = 1;
@@ -358,17 +421,24 @@ public class GM : MonoBehaviour
                             gOSelCristal[1].GetComponent<GO>().MMove = 2;
                         }
                     }
-
-                    animing = true;
+                    count_gOSelCristal = 0;
                 }
-                //以上为消除 & 如果无消除,执行无效操作后的返回动画
 
+                else
+                {
+                    //Debug.Log(boomCount);
+                }
+            }
+            //(有消除或无消除后都会播放动画(下落/回弹)animing == true)
+            //以上为消除
 
-
-                //以上为下落
-                count_gOSelCristal = 0;
+            if (playing==1)
+            {
+                if(animing == false)
+                    MouseSelect();
             }
         }
+
     }
     
 }
