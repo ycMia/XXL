@@ -11,7 +11,7 @@ public class GM : MonoBehaviour
     public GameObject[] gOSelCristal = new GameObject[2];//gameObject-Selected-Cristal
     public int   count_gOSelCristal = 0;
 
-    public bool animing = false;//动画播放中==true
+    public bool animationPlaying = false;//动画播放中==true
     public int playing = 1;//用户可操作==1
     public bool gIsDead = false;
 
@@ -115,7 +115,7 @@ public class GM : MonoBehaviour
         fObj.transform.localPosition = new Vector3(0, 0, 0);
         fObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
 
-        mObj.SetActive(true);
+        //mObj.SetActive(true);
     }
 
     public void GenLines()
@@ -199,103 +199,99 @@ public class GM : MonoBehaviour
     {
         for(int i=0;i<10;i++)
         {
-            for(int j=0;j<10;j++)
+            for(int j=0;j<11;j++)
             {
                 gContainer[i,j] = Lazer(gOLines[i, j]);
             }
         }
 
+        //for (int i = 0; i < 10; i++)
+        //{
+        //    for (int j = 0; j < 10; j++)
+        //    {
+        //        if(gContainer[i,j] == -1)
+        //        {
+        //            //这个位置为空,可以进行下落操作
+        //            //下落操作已经完成
+        //        }
+        //    }
+        //}
+    }
+    public void SpawnRow()
+    {
+        LazerAll();
         for (int i = 0; i < 10; i++)
         {
-            for (int j = 0; j < 10; j++)
+            if( gContainer[i, 10] == -1 && gContainer[i, 10] == -1)
             {
-                if(gContainer[i,j] == -1)
-                {
-                    //这个位置为空,可以进行下落操作
-                }
+                GenMObj(Random.Range(0, 3), i, 10);
             }
         }
     }
+
     void Start()
     {
         GenLines();
-
-        GenMObj(0, 0, 0);
-        GenMObj(2, 1, 0);
-        GenMObj(0, 2, 0);
-        GenMObj(0, 3, 0);
-
-        GenMObj(2, 0, 1);
-        GenMObj(1, 1, 1);
-        GenMObj(2, 2, 1);
-        GenMObj(1, 3, 1);
-
-        GenMObj(0, 0, 2);
-        GenMObj(1, 1, 2);
-        GenMObj(3, 2, 2);
-        GenMObj(0, 3, 2);
-
-        GenMObj(2, 0, 3);
-        GenMObj(2, 1, 3);
-        GenMObj(0, 2, 3);
-        GenMObj(3, 3, 3);
-
-        GenMObj(3, 0, 4);
-        GenMObj(2, 1, 4);
-        GenMObj(2, 2, 4);
-        GenMObj(0, 3, 4);
-
         //Lazer(gOLines[1,0]);//碰撞事件只能在Start后开始(一帧你碰不了)
     }
-
+    
     void Update()
     {
-        if(tBtn ==true)
-        {
-            GenMObj(3, 0, 10);
-            GenMObj(2, 1, 10);
-            GenMObj(2, 2, 10);
-            GenMObj(0, 3, 10);
-            tBtn = false;
-        }//用于模拟RandomRow
+        if (tBtn)
+            Time.timeScale = 20;
+        else
+            Time.timeScale = 1;
+
+        SpawnRow();
+
+        //if(tBtn ==true)
+        //{
+        //    GenMObj(3, 0, 10);
+        //    GenMObj(2, 1, 10);
+        //    GenMObj(2, 2, 10);
+        //    GenMObj(0, 3, 10);
+        //    tBtn = false;
+        //}//用于模拟RandomRow
 
         playing = 1;//初始设定玩家可以操作...
         LazerAll();
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
+        for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
                 if (Lazer(gOLines[i, j]) == -1)
                 {
-                    print("in" + i + " " + j);
+//                  print("in" + i + " " + j);
                     playing = 0;//如果在范围内有空块(需要下落操作)则玩家必须等待下落完毕
-                    i = 4;
+                    i = 10;//跳出大循环
                     break;
                 }
-        if (playing == 1 && count_gOSelCristal == 2) count_gOSelCristal = 0;//防止完全下落完毕后玩家的选择宝石数仍然保持在2个(选择中bug)
 
-        animing = false;
+        if (count_gOSelCristal == 2 && (gOSelCristal[0] == null || gOSelCristal[1] == null)) count_gOSelCristal = 0;
+        //防止完全下落完毕后玩家的选择宝石数仍然保持在2个(选择中bug)
+
+
+        animationPlaying = false;
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++)
-                animing |= (Lazer_anime(i, j) != 0);
+                animationPlaying |= (Lazer_anime(i, j) != 0);
 
         if (gIsDead)
         {
             //playIsDead
         }
-        else if (animing == false)
+        else if (animationPlaying == false)
         {
             //print("in 下落");
-
-            LazerAll();
+            SpawnRow();
             //为gContainer[,]数组赋值,即获取全部已经block住的宝石的阵列
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 10; i++)
             {
-                for (int j = 0; j < 11; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
+                for (int j = 0; j < 10; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
                 {
                     //    if(i==1&&j==1)
                     //        print(i + " " + j + " " + gContainer[i, j]);
                     if (gContainer[i, j] == -1)//这个块被扫描出是空的
                     {
-                        for (int z = j; z < 11; z++)//第11层, 下落层
+                        for (int z = j; z < 11; z++)//第11层, 下落层也要包括进去
                         {
                             if (Lazer_getObject(i, z) != null)
                             {
@@ -303,7 +299,7 @@ public class GM : MonoBehaviour
                             }
                             else
                             {
-                                print("有块被清除");//刷新过快...这可能是个bug
+                                print("有区域需要填补"+i+" "+z);
                             }
                         }
                     }
@@ -311,132 +307,129 @@ public class GM : MonoBehaviour
             }
             //以上为下落
 
-            if (true)
+            //print("in 消除");
+            LazerAll();
+            //为gContainer[,]数组赋值,即获取全部已经block住的宝石的阵列
+
+            int[,] prob_x = new int[10, 10];
+            int[,] prob_y = new int[10, 10];
+            //bool[,] enable = new bool[10, 10];
+
+            for (int i = 0; i < 10; i++)
             {
-                //print("in 消除");
-                LazerAll();
-                //为gContainer[,]数组赋值,即获取全部已经block住的宝石的阵列
-
-                int[,] prob_x = new int[10, 10];
-                int[,] prob_y = new int[10, 10];
-                //bool[,] enable = new bool[10, 10];
-
-                for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 10; j++)
                 {
-                    for (int j = 0; j < 10; j++)
+                    if (i != 9 && i != 0)
                     {
-                        if (i != 9 && i != 0)
-                        {
-                            if (gContainer[i, j] == gContainer[i + 1, j])
-                                prob_x[i, j]++;
-                            if (gContainer[i, j] == gContainer[i - 1, j])
-                                prob_x[i, j]++;
-                        }
-                        else if (i == 9 && gContainer[i, j] == gContainer[i - 1, j])
-                        {
+                        if (gContainer[i, j] == gContainer[i + 1, j])
                             prob_x[i, j]++;
-                        }
-                        else if (i == 0 && gContainer[i, j] == gContainer[i + 1, j])
-                        {
+                        if (gContainer[i, j] == gContainer[i - 1, j])
                             prob_x[i, j]++;
-                        }
-                        //prob_x
+                    }
+                    else if (i == 9 && gContainer[i, j] == gContainer[i - 1, j])
+                    {
+                        prob_x[i, j]++;
+                    }
+                    else if (i == 0 && gContainer[i, j] == gContainer[i + 1, j])
+                    {
+                        prob_x[i, j]++;
+                    }
+                    //prob_x
 
-                        if (j != 9 && j != 0)
-                        {
-                            if (gContainer[i, j] == gContainer[i, j + 1])
-                                prob_y[i, j]++;
-                            if (gContainer[i, j] == gContainer[i, j - 1])
-                                prob_y[i, j]++;
-                        }
-                        else if (j == 9 && gContainer[i, j] == gContainer[i, j - 1])
-                        {
+                    if (j != 9 && j != 0)
+                    {
+                        if (gContainer[i, j] == gContainer[i, j + 1])
                             prob_y[i, j]++;
-                        }
-                        else if (j == 0 && gContainer[i, j] == gContainer[i, j + 1])
-                        {
+                        if (gContainer[i, j] == gContainer[i, j - 1])
                             prob_y[i, j]++;
-                        }
-                        //prob_y
                     }
-                }
-
-                //for (int i = 0; i < 10; i++)
-                //    for (int j = 0; j < 10; j++)
-                //        enable[i, j] = false;
-                //背景色2333
-
-                int boomCount = 0;//可以作为分数记录器哦
-
-                for (int i = 0; i < 10; i++)
-                {
-                    for (int j = 0; j < 10; j++)
+                    else if (j == 9 && gContainer[i, j] == gContainer[i, j - 1])
                     {
-                        if (prob_x[i, j] == 2)//&& i!=0&&i!=9 , 因为四角不会出现2
-                        {
-                            //enable[i, j] = true;
-                            //enable[i+1, j] = true;
-                            //enable[i-1, j] = true;
-                            boomCount += Boom(i, j);
-                            boomCount += Boom(i + 1, j);
-                            boomCount += Boom(i - 1, j);
-                        }
-                        if (prob_y[i, j] == 2)
-                        {
-                            //enable[i, j] = true;
-                            //enable[i, j+1] = true;
-                            //enable[i, j-1] = true;
-                            boomCount += Boom(i, j);
-                            boomCount += Boom(i, j + 1);
-                            boomCount += Boom(i, j - 1);
-                        }
+                        prob_y[i, j]++;
                     }
-                }
-
-                if (boomCount == 0 && gOSelCristal[0]!=null && gOSelCristal[1]!=null && count_gOSelCristal ==2)//无消除,执行无效操作后的返回动画(这里只能判断物体是否存在了,我别无他法)
-                {
-                    if (gOSelCristal[0].transform.position.x == gOSelCristal[1].transform.position.x)
+                    else if (j == 0 && gContainer[i, j] == gContainer[i, j + 1])
                     {
-                        if (gOSelCristal[0].transform.position.y > gOSelCristal[1].transform.position.y)
-                        {
-                            gOSelCristal[0].GetComponent<GO>().MMove = 4;
-                            gOSelCristal[1].GetComponent<GO>().MMove = 3;
-                        }
-                        else
-                        {
-                            gOSelCristal[0].GetComponent<GO>().MMove = 3;
-                            gOSelCristal[1].GetComponent<GO>().MMove = 4;
-                        }
+                        prob_y[i, j]++;
                     }
-                    else if (gOSelCristal[0].transform.position.y == gOSelCristal[1].transform.position.y)
-                    {
-                        if (gOSelCristal[0].transform.position.x > gOSelCristal[1].transform.position.x)
-                        {
-                            gOSelCristal[0].GetComponent<GO>().MMove = 2;
-                            gOSelCristal[1].GetComponent<GO>().MMove = 1;
-                        }
-                        else
-                        {
-                            gOSelCristal[0].GetComponent<GO>().MMove = 1;
-                            gOSelCristal[1].GetComponent<GO>().MMove = 2;
-                        }
-                    }
-                    count_gOSelCristal = 0;
-                }
-
-                else
-                {
-                    //Debug.Log(boomCount);
+                    //prob_y
                 }
             }
-            //(有消除或无消除后都会播放动画(下落/回弹)animing == true)
-            //以上为消除
 
-            if (playing==1)
+            //for (int i = 0; i < 10; i++)
+            //    for (int j = 0; j < 10; j++)
+            //        enable[i, j] = false;
+            //背景色2333
+
+            int boomCount = 0;//可以作为分数记录器哦
+
+            for (int i = 0; i < 10; i++)
             {
-                if(animing == false)
-                    MouseSelect();
+                for (int j = 0; j < 10; j++)
+                {
+                    if (prob_x[i, j] == 2)//&& i!=0&&i!=9 , 因为四角不会出现2
+                    {
+                        //enable[i, j] = true;
+                        //enable[i+1, j] = true;
+                        //enable[i-1, j] = true;
+                        boomCount += Boom(i, j);
+                        boomCount += Boom(i + 1, j);
+                        boomCount += Boom(i - 1, j);
+                    }
+                    if (prob_y[i, j] == 2)
+                    {
+                        //enable[i, j] = true;
+                        //enable[i, j+1] = true;
+                        //enable[i, j-1] = true;
+                        boomCount += Boom(i, j);
+                        boomCount += Boom(i, j + 1);
+                        boomCount += Boom(i, j - 1);
+                    }
+                }
             }
+            //if (playing == 1 && animationPlaying == false && count_gOSelCristal == 2)
+            if (boomCount == 0 && gOSelCristal[0]!=null && gOSelCristal[1]!=null && count_gOSelCristal ==2)//无消除,执行无效操作后的返回动画(这里只能判断物体是否存在了,我别无他法)
+            {
+                if (gOSelCristal[0].transform.position.x == gOSelCristal[1].transform.position.x)
+                {
+                    if (gOSelCristal[0].transform.position.y > gOSelCristal[1].transform.position.y)
+                    {
+                        gOSelCristal[0].GetComponent<GO>().MMove = 4;
+                        gOSelCristal[1].GetComponent<GO>().MMove = 3;
+                    }
+                    else
+                    {
+                        gOSelCristal[0].GetComponent<GO>().MMove = 3;
+                        gOSelCristal[1].GetComponent<GO>().MMove = 4;
+                    }
+                }
+                else if (gOSelCristal[0].transform.position.y == gOSelCristal[1].transform.position.y)
+                {
+                    if (gOSelCristal[0].transform.position.x > gOSelCristal[1].transform.position.x)
+                    {
+                        gOSelCristal[0].GetComponent<GO>().MMove = 2;
+                        gOSelCristal[1].GetComponent<GO>().MMove = 1;
+                    }
+                    else
+                    {
+                        gOSelCristal[0].GetComponent<GO>().MMove = 1;
+                        gOSelCristal[1].GetComponent<GO>().MMove = 2;
+                    }
+                }
+                count_gOSelCristal = 0;
+            }
+
+            else
+            {
+                //Debug.Log(boomCount);
+            }
+        }
+        //(有消除或无消除后都会播放动画(下落/回弹)animing == true)
+        //以上为消除
+
+        if (playing==1)
+        {
+            if(animationPlaying == false)
+                MouseSelect();
         }
 
     }
