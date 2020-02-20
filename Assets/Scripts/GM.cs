@@ -27,72 +27,75 @@ public class GM : MonoBehaviour
             {
                 foreach (Collider2D c in col)//其实这边只会碰到一个23333   c是Collider2D的缩写
                 {
-                    //Debug.Log(count_gOSelCristal);
-                    if(count_gOSelCristal==0)
+                    if (c.gameObject.GetComponent<GO>().mLocalPosition.y < 10)
                     {
-                        c.gameObject.GetComponent<GO>().onClick = true;
-                        gOSelCristal[0] = c.gameObject;
-                        count_gOSelCristal=1;
-                    }
-                    else
-                    {
-                        if(c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x &&
-                            c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y)//选中了相同宝石
+                        //Debug.Log(count_gOSelCristal);
+                        if (count_gOSelCristal == 0)
                         {
-                            gOSelCristal[0].GetComponent<GO>().onClick = false;
-                            count_gOSelCristal = 0;//删除
-                        }
-                        else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x+1 &&
-                            c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y)//c 在右侧
-                        {
-                            gOSelCristal[1] = c.gameObject;
-                            gOSelCristal[0].GetComponent<GO>().onClick = false;
-
-                            gOSelCristal[1].GetComponent<GO>().MMove = 2;//c左移
-                            gOSelCristal[0].GetComponent<GO>().MMove = 1;//gOSel右移
-                            
-                            count_gOSelCristal = 2;//需要处理
-                        }
-                        else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x - 1 &&
-                            c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y)//c 左侧
-                        {
-                            gOSelCristal[1] = c.gameObject;
-                            gOSelCristal[0].GetComponent<GO>().onClick = false;
-
-                            gOSelCristal[1].GetComponent<GO>().MMove = 1;//c右移
-                            gOSelCristal[0].GetComponent<GO>().MMove = 2;//gOSel左移
-
-                            count_gOSelCristal = 2;//需要处理
-                        }
-                        else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x &&
-                            c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y + 1)//c 在上方
-                        {
-                            gOSelCristal[1] = c.gameObject;
-                            gOSelCristal[0].GetComponent<GO>().onClick = false;
-
-                            gOSelCristal[1].GetComponent<GO>().MMove = 4;//c下移
-                            gOSelCristal[0].GetComponent<GO>().MMove = 3;//gOSel上移
-
-                            count_gOSelCristal = 2;//需要处理
-                        }
-                        else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x &&
-                            c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y - 1)//c 在下方
-                        {
-                            gOSelCristal[1] = c.gameObject;
-                            gOSelCristal[0].GetComponent<GO>().onClick = false;
-
-                            gOSelCristal[1].GetComponent<GO>().MMove = 3;//c上移
-                            gOSelCristal[0].GetComponent<GO>().MMove = 4;//gOSel下移
-
-                            count_gOSelCristal = 2;//需要处理
-                        }
-                        else//选中了不在周围的宝石
-                        {
-                            gOSelCristal[0].GetComponent<GO>().onClick = false;
+                            c.gameObject.GetComponent<GO>().onClick = true;
                             gOSelCristal[0] = c.gameObject;
-                            gOSelCristal[0].GetComponent<GO>().onClick = true;
+                            count_gOSelCristal = 1;
                         }
+                        else
+                        {
+                            if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x &&
+                                c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y)//选中了相同宝石
+                            {
+                                gOSelCristal[0].GetComponent<GO>().onClick = false;
+                                count_gOSelCristal = 0;//删除
+                            }
+                            else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x + 1 &&
+                                c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y)//c 在右侧
+                            {
+                                gOSelCristal[1] = c.gameObject;
+                                gOSelCristal[0].GetComponent<GO>().onClick = false;
 
+                                gOSelCristal[1].GetComponent<GO>().MMove = 2;//c左移
+                                gOSelCristal[0].GetComponent<GO>().MMove = 1;//gOSel右移
+
+                                count_gOSelCristal = 2;//需要处理
+                            }
+                            else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x - 1 &&
+                                c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y)//c 左侧
+                            {
+                                gOSelCristal[1] = c.gameObject;
+                                gOSelCristal[0].GetComponent<GO>().onClick = false;
+
+                                gOSelCristal[1].GetComponent<GO>().MMove = 1;//c右移
+                                gOSelCristal[0].GetComponent<GO>().MMove = 2;//gOSel左移
+
+                                count_gOSelCristal = 2;//需要处理
+                            }
+                            else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x &&
+                                c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y + 1)//c 在上方
+                            {
+                                gOSelCristal[1] = c.gameObject;
+                                gOSelCristal[0].GetComponent<GO>().onClick = false;
+
+                                gOSelCristal[1].GetComponent<GO>().MMove = 4;//c下移
+                                gOSelCristal[0].GetComponent<GO>().MMove = 3;//gOSel上移
+
+                                count_gOSelCristal = 2;//需要处理
+                            }
+                            else if (c.gameObject.GetComponent<GO>().mLocalPosition.x == gOSelCristal[0].GetComponent<GO>().mLocalPosition.x &&
+                                c.gameObject.GetComponent<GO>().mLocalPosition.y == gOSelCristal[0].GetComponent<GO>().mLocalPosition.y - 1)//c 在下方
+                            {
+                                gOSelCristal[1] = c.gameObject;
+                                gOSelCristal[0].GetComponent<GO>().onClick = false;
+
+                                gOSelCristal[1].GetComponent<GO>().MMove = 3;//c上移
+                                gOSelCristal[0].GetComponent<GO>().MMove = 4;//gOSel下移
+
+                                count_gOSelCristal = 2;//需要处理
+                            }
+                            else//选中了不在周围的宝石
+                            {
+                                gOSelCristal[0].GetComponent<GO>().onClick = false;
+                                gOSelCristal[0] = c.gameObject;
+                                gOSelCristal[0].GetComponent<GO>().onClick = true;
+                            }
+
+                        }
                     }
                 }
             }
@@ -142,7 +145,7 @@ public class GM : MonoBehaviour
         Collider2D[] col = Physics2D.OverlapPointAll(gOL.transform.position);
         if (col.Length > 0)
         {
-            Destroy(col[0].gameObject);
+            col[0].gameObject.GetComponent<GO>().inDestroy = true;
             return 1;
         }
         else
@@ -224,7 +227,7 @@ public class GM : MonoBehaviour
         {
             if( gContainer[i, 10] == -1 && gContainer[i, 10] == -1)
             {
-                GenMObj(Random.Range(0, 3), i, 10);
+                GenMObj(Random.Range(0, 4) , i, 10);
             }
         }
     }
@@ -251,12 +254,12 @@ public class GM : MonoBehaviour
         //    GenMObj(2, 2, 10);
         //    GenMObj(0, 3, 10);
         //    tBtn = false;
-        //}//用于模拟RandomRow
+        //}//用于模拟SpawnRow()
 
         playing = 1;//初始设定玩家可以操作...
         LazerAll();
         for (int i = 0; i < 10; i++)
-            for (int j = 0; j < 10; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
+            for (int j = 0; j < 10; j++)//SpawnRow()方法施工完毕后i,j的限制条件应该改为10
                 if (Lazer(gOLines[i, j]) == -1)
                 {
 //                  print("in" + i + " " + j);
@@ -281,11 +284,10 @@ public class GM : MonoBehaviour
         else if (animationPlaying == false)
         {
             //print("in 下落");
-            SpawnRow();
             //为gContainer[,]数组赋值,即获取全部已经block住的宝石的阵列
             for (int i = 0; i < 10; i++)
             {
-                for (int j = 0; j < 10; j++)//RandomRow方法施工完毕后i,j的限制条件应该改为10
+                for (int j = 0; j < 10; j++)//SpawnRow()方法施工完毕后i,j的限制条件应该改为10
                 {
                     //    if(i==1&&j==1)
                     //        print(i + " " + j + " " + gContainer[i, j]);
@@ -371,23 +373,63 @@ public class GM : MonoBehaviour
                         //enable[i, j] = true;
                         //enable[i+1, j] = true;
                         //enable[i-1, j] = true;
-                        boomCount += Boom(i, j);
-                        boomCount += Boom(i + 1, j);
-                        boomCount += Boom(i - 1, j);
+                        bool flag = true;
+                        LazerAll();
+                        for(int k=i-1;k<i+1;k++)
+                        {
+                            for(int l=j;l>=0;l--)
+                            {
+                                if(gContainer[k,l]==-1)
+                                {
+                                    flag = false;
+                                    k = i + 1;//跳出大循环
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(flag)//底部无空间判定
+                        {
+                            boomCount += Boom(i, j);
+                            boomCount += Boom(i + 1, j);
+                            boomCount += Boom(i - 1, j);
+                        }
                     }
                     if (prob_y[i, j] == 2)
                     {
                         //enable[i, j] = true;
                         //enable[i, j+1] = true;
                         //enable[i, j-1] = true;
-                        boomCount += Boom(i, j);
-                        boomCount += Boom(i, j + 1);
-                        boomCount += Boom(i, j - 1);
+                        bool flag = true;
+                        LazerAll();
+                        for (int l = j; l >= 0; l--)
+                        {
+                            if (gContainer[i, l] == -1)
+                            {
+                                flag = false;
+                                break;
+                            }
+                        }
+
+                        if (flag)//底部无空间判定
+                        {
+                            boomCount += Boom(i, j);
+                            boomCount += Boom(i, j + 1);
+                            boomCount += Boom(i, j - 1);
+                        }
+
                     }
                 }
             }
-            //if (playing == 1 && animationPlaying == false && count_gOSelCristal == 2)
-            if (boomCount == 0 && gOSelCristal[0]!=null && gOSelCristal[1]!=null && count_gOSelCristal ==2)//无消除,执行无效操作后的返回动画(这里只能判断物体是否存在了,我别无他法)
+            
+            if (boomCount == 0
+                && gOSelCristal[0] != null
+                && gOSelCristal[0] != null
+
+                && gOSelCristal[0].GetComponent<GO>().inDestroy ==false 
+                && gOSelCristal[0].GetComponent<GO>().inDestroy == false 
+                
+                && count_gOSelCristal ==2)//无消除,执行无效操作后的返回动画(这里只能判断物体是否存在了,我别无他法)
             {
                 if (gOSelCristal[0].transform.position.x == gOSelCristal[1].transform.position.x)
                 {

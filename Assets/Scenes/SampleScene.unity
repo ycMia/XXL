@@ -140,7 +140,7 @@ Animator:
   m_GameObject: {fileID: 283832067}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5026f43688cd8434492916f3bc18abbb, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -318,7 +318,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818814345}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.1, y: -8.5, z: 0}
+  m_LocalPosition: {x: -4.5, y: -9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1766166911}
@@ -348,8 +348,11 @@ MonoBehaviour:
   gOSelCristal:
   - {fileID: 0}
   - {fileID: 0}
+  count_gOSelCristal: 0
+  animationPlaying: 0
   playing: 1
   gIsDead: 0
+  tBtn: 0
 --- !u!1 &1276410804
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,8 +509,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1766166910}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.1, y: 10, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 4.489, y: 14.294, z: 0}
+  m_LocalScale: {x: 0.947652, y: 60, z: 1}
   m_Children: []
   m_Father: {fileID: 818814347}
   m_RootOrder: 0
@@ -548,7 +551,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: f7d2478b132f5874da337a209038aebc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
