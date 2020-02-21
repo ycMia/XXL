@@ -243,7 +243,7 @@ public class GM : MonoBehaviour
         if (tBtn)
             Time.timeScale = 20;
         else
-            Time.timeScale = 1;
+            Time.timeScale = 1f;
 
         SpawnRow();
 
@@ -375,7 +375,7 @@ public class GM : MonoBehaviour
                         //enable[i-1, j] = true;
                         bool flag = true;
                         LazerAll();
-                        for(int k=i-1;k<i+1;k++)
+                        for(int k=i-1;k<=i+1;k++)
                         {
                             for(int l=j;l>=0;l--)
                             {

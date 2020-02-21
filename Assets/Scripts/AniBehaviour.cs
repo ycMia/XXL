@@ -35,6 +35,7 @@ public class AniBehaviour : StateMachineBehaviour
     //}
     public override void OnStateExit(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
+        animator.speed = 0f;//播完一遍暂停
         Destroy(animator.gameObject);
     }
 }
