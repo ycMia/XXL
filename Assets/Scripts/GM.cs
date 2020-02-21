@@ -423,12 +423,9 @@ public class GM : MonoBehaviour
             }
             
             if (boomCount == 0
-                && gOSelCristal[0] != null
-                && gOSelCristal[0] != null
+                && gOSelCristal[0] != null && gOSelCristal[0].GetComponent<GO>().inDestroy == false
+                && gOSelCristal[1] != null && gOSelCristal[1].GetComponent<GO>().inDestroy == false
 
-                && gOSelCristal[0].GetComponent<GO>().inDestroy ==false 
-                && gOSelCristal[0].GetComponent<GO>().inDestroy == false 
-                
                 && count_gOSelCristal ==2)//无消除,执行无效操作后的返回动画(这里只能判断物体是否存在了,我别无他法)
             {
                 if (gOSelCristal[0].transform.position.x == gOSelCristal[1].transform.position.x)
